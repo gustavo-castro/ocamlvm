@@ -7,6 +7,9 @@ type instruction =
 
 and block = instruction list
 
+let inst_to_int inst_int = match inst_int with
+| Int(n) -> n 
+
 let instruction_to_string = function
 	| Int(n) -> string_of_int n
 	| Lookup(id) -> id
@@ -15,8 +18,7 @@ let instruction_to_string = function
 	| Mult -> "*"
 
 let print_prog p =
-	let print_instruction chan v = output_string chan (instruction_to_string v) in
 	let rec print_list = function 
 	[] -> ()
-	| e::l -> Printf.printf "%a" print_instruction e ; print_string " " ; print_list l in
+	| e::l -> print_string (instruction_to_string e); print_string " " ; print_list l in
 	print_list p

@@ -65,7 +65,7 @@ let step state =
     | IS.Mult ->
       let Int n1 = pop() in
       let Int n2 = pop() in
-      push(Int(n1*n2))	
+      push(Int(n1*n2))
 
 let execute p : unit =
   let is_empty l = match l with
@@ -74,4 +74,5 @@ let execute p : unit =
   let state = {code=p; stack=[]; env=Env.empty} in
   while not (is_empty state.code) do
     step state;
-    done;;
+    done;
+  print_int (IS.inst_to_int (List.hd state.code))
