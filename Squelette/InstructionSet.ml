@@ -4,11 +4,10 @@ type instruction =
   | Add
   | Sub
   | Mult
+  | Let of string
+  | EndLet of string
 
 and block = instruction list
-
-let inst_to_int inst_int = match inst_int with
-| Int(n) -> n 
 
 let instruction_to_string = function
 	| Int(n) -> string_of_int n
@@ -16,6 +15,8 @@ let instruction_to_string = function
 	| Add -> "+"
 	| Sub -> "-"
 	| Mult -> "*"
+	| Let(id) -> "Let"
+	| EndLet(id) -> "EndLet"
 
 let print_prog p =
 	let rec print_list = function 

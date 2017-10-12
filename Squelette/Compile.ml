@@ -25,3 +25,9 @@ let rec compile_expr = function
     (compile_expr e2)
     @ (compile_expr e1)
     @ [Mult]
+
+  | Ast.Letin(id, e1, e2) ->
+    (compile_expr e1)
+    @ [Let(id)]
+    @ (compile_expr e2)
+    @ [EndLet(id)]

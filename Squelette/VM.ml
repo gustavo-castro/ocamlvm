@@ -76,6 +76,13 @@ let step state =
       let Int n2 = pop() in
       push(Int(n1*n2))
 
+    | IS.Let(id) ->
+      let Int n = pop() in
+      state.env <- Env.add id (Int n) state.env
+
+    | IS.EndLet(id) ->
+      state.env <- Env.remove id state.env
+
 let execute p : unit =
   let is_empty l = match l with
   | [] -> true
