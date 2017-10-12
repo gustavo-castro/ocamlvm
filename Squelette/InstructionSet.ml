@@ -20,5 +20,6 @@ let instruction_to_string = function
 let print_prog p =
 	let rec print_list = function 
 	[] -> ()
-	| e::l -> print_string (instruction_to_string e); print_string " " ; print_list l in
-	print_list p
+	| e::l -> print_string ((instruction_to_string e)^" "); print_list l in
+	print_list p;
+	print_endline " ";

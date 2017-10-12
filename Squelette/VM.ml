@@ -2,6 +2,15 @@ module IS = InstructionSet
 
 type value =
   | Int of int
+
+let print_value_list v =
+  let value_string value_int = match value_int with
+    | Int(n) -> (string_of_int n) in
+  let rec print_list = function 
+  [] -> ()
+  | e::l -> print_string ((value_string e)^" "); print_list l in
+  print_list v;
+  print_endline " ";
   
 module Env = Map.Make(String)
 type env = value Env.t
@@ -75,4 +84,4 @@ let execute p : unit =
   while not (is_empty state.code) do
     step state;
     done;
-  print_int (IS.inst_to_int (List.hd state.code))
+  print_value_list state.stack
