@@ -6,6 +6,9 @@ type instruction =
   | Mult
   | Let of string
   | EndLet of string
+  | MkClos of string * Ast.expr
+  | Apply
+  | Return
 
 and block = instruction list
 
@@ -17,6 +20,9 @@ let instruction_to_string = function
 	| Mult -> "*"
 	| Let(id) -> "Let"
 	| EndLet(id) -> "EndLet"
+	| MkClos(id, e) -> "MkClos"
+	| Apply -> "Apply"
+	| Return -> "Return"
 
 let print_prog p =
 	let rec print_list = function 

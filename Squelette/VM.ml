@@ -1,19 +1,26 @@
 module IS = InstructionSet
+  
+module Env = Map.Make(String)
+type env = int Env.t (* change value here to int in order to define the closures *)
+
+type clo =
+  { code : IS.block;
+    id : string;
+    env : env}
 
 type value =
   | Int of int
+  | Clos of clo
 
 let print_value_list v =
-  let value_string value_int = match value_int with
-    | Int(n) -> (string_of_int n) in
+  let value_string value = match value with
+    | Int(n) -> (string_of_int n)
+    | Clos(clo) -> clo.id in
   let rec print_list = function 
   [] -> ()
   | e::l -> print_string ((value_string e)^" "); print_list l in
   print_list v;
   print_endline " ";
-  
-module Env = Map.Make(String)
-type env = value Env.t
 
 (* Ici, version immuable *)
 (*
@@ -59,7 +66,7 @@ let step state =
       let v =
 	Env.find id state.env
       in
-      push v
+      push(Int(v))
       
     | IS.Add ->
       let Int n1 = pop() in
@@ -78,10 +85,27 @@ let step state =
 
     | IS.Let(id) ->
       let Int n = pop() in
-      state.env <- Env.add id (Int n) state.env
+      state.env <- Env.add id n state.env
 
     | IS.EndLet(id) ->
       state.env <- Env.remove id state.env
+
+    | IS.MkClos(id, e) ->
+      push(Clos({code=(Compile.compile_expr e); id=id; env=state.env}))
+
+    | IS.Apply ->
+      let Int v = pop() in
+      let Clos(clo) = pop() in
+      push(Clos({code=state.code; id=""; env=state.env}));
+      state.code <- clo.code @ [IS.Return];
+      state.env <- Env.add clo.id v clo.env
+
+    | IS.Return ->
+      let Int v = pop() in
+      let Clos(clo) = pop() in
+      push(Int(v));
+      state.env <- clo.env;
+      state.code <- clo.code
 
 let execute p : unit =
   let is_empty l = match l with

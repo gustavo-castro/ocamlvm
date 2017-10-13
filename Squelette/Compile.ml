@@ -31,3 +31,11 @@ let rec compile_expr = function
     @ [Let(id)]
     @ (compile_expr e2)
     @ [EndLet(id)]
+
+  | Ast.Fun(id, e) ->
+    [MkClos(id, e)]
+
+  | Ast.Apply(e1, e2) ->
+    (compile_expr e1)
+    @ (compile_expr e2)
+    @ [Apply]
