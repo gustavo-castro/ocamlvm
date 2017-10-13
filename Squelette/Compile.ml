@@ -7,6 +7,10 @@ let rec compile_expr = function
   | Ast.Ident(id) ->
     [Lookup(id)]
 
+  | Ast.GetR(e) ->
+    (compile_expr e)
+    @ [Load]
+
   | Ast.Binop(Ast.Add, e1, e2) ->
     (* D'abord un opérande, puis
        l'autre, puis l'opérateur,
@@ -39,3 +43,19 @@ let rec compile_expr = function
     (compile_expr e1)
     @ (compile_expr e2)
     @ [Apply]
+
+  | Ast.Seq(e1, e2) ->
+    (compile_expr e1)
+    @ (compile_expr e2)
+
+  | Ast.Ref(e) -> 
+    [Alloc]
+    @ [Dup]
+    @ (compile_expr e)
+    @ [Store]
+
+  | Ast.SetR(d, e) -> (* fazer ainda *)
+    (compile_expr d)
+    @ (compile_expr e)
+    @ [Store]
+    @ [Unit]

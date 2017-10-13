@@ -38,7 +38,7 @@ rule token = parse
   | "->" { ARROW }
   | ";"  { SEMI  }
   | "!"  { BANG  }
-  | "<-" { SET   }
+  | ":=" { SET   } (* changed set to := (from <-) for it to be equivalent to ocaml*)
   | "(*" { comment lexbuf; token lexbuf }
   | _    { failwith ("Unknown character : " ^ (lexeme lexbuf)) }
   | eof  { EOF   }

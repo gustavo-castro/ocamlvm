@@ -9,6 +9,12 @@ type instruction =
   | MkClos of string * Ast.expr
   | Apply
   | Return
+  | Alloc
+  | Load
+  | Store
+  | Unit
+  | Dup
+  | Drop
 
 and block = instruction list
 
@@ -23,6 +29,12 @@ let instruction_to_string = function
 	| MkClos(id, e) -> "MkClos"
 	| Apply -> "Apply"
 	| Return -> "Return"
+  	| Alloc -> "Alloc" 
+  	| Load -> "Load"
+  	| Store -> "Store"
+  	| Unit -> "Unit"
+  	| Dup -> "Dup"
+  	| Drop -> "Drop"
 
 let print_prog p =
 	let rec print_list = function 

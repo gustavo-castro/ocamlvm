@@ -1,0 +1,1 @@
+let a = 10 in let func = (fun x -> a*x + 10) in (func 3)
