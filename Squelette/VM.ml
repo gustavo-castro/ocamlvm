@@ -42,7 +42,7 @@ type thread_state = {
 
 exception End_of_thread of thread_state
     
-let step state =
+let rec step state =
   let fetch() =
     match state.code with
       | []   ->
@@ -137,6 +137,18 @@ let step state =
     | IS.Drop ->
       let Int _ = pop() in
       ()
+
+    | IS.Spawn ->
+      let is_empty l = match l with
+      | [] -> true
+      | _ -> false in
+      let v = pop() in
+      let Clos(clo) = pop() in
+      let new_state = {code=clo.code; stack=[]; env=(Env.add clo.id v Env.empty); heap=state.heap} in
+      while not (is_empty new_state.code) do
+        step new_state;
+        done;
+      push(List.hd new_state.stack)
 
 let execute p : unit =
   let is_empty l = match l with

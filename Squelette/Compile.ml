@@ -54,8 +54,13 @@ let rec compile_expr = function
     @ (compile_expr e)
     @ [Store]
 
-  | Ast.SetR(d, e) -> (* fazer ainda *)
+  | Ast.SetR(d, e) -> 
     (compile_expr d)
     @ (compile_expr e)
     @ [Store]
     @ [Unit]
+
+  | Ast.Spawn(e1, e2) ->
+    (compile_expr e1)
+    @ (compile_expr e2)
+    @ [Spawn]
