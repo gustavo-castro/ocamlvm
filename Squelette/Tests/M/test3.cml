@@ -1,0 +1,1 @@
+let a = 3 in let func = (fun x -> x*a) in (spawn func 5)

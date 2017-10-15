@@ -1,1 +1,1 @@
-spawn (fun x -> 3*x) 3
+spawn (fun x -> 4*x) 3

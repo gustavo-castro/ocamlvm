@@ -144,11 +144,12 @@ let rec step state =
       | _ -> false in
       let v = pop() in
       let Clos(clo) = pop() in
-      let new_state = {code=clo.code; stack=[]; env=(Env.add clo.id v Env.empty); heap=state.heap} in
+      let new_state = {code=clo.code; stack=[]; env=(Env.add clo.id v clo.env); heap=state.heap} in
       while not (is_empty new_state.code) do
         step new_state;
-        done;
-      push(List.hd new_state.stack)
+        done; 
+      let retval = List.hd new_state.stack in
+      push(retval)
 
 let execute p : unit =
   let is_empty l = match l with
