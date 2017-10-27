@@ -1,1 +1,1 @@
-let x = ref 3 in (x := 5; !x)
+let x = ref 3 in (x <- 5; !x)

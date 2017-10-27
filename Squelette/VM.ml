@@ -12,7 +12,7 @@ and env = value Env.t (* change value here to int in order to define the closure
 type heap = { mutable memory : (int, value) Hashtbl.t;
               mutable address : int }
 
-let print_reversed_value_list v =
+let print_reversed_value_list_without_units v =
   let value_string value = match value with
     | Int(n) -> (string_of_int n)
     | Clos(clo) -> clo.id
@@ -20,7 +20,10 @@ let print_reversed_value_list v =
   let rec print_rev_list = function 
   [] -> ()
   | e::l -> print_rev_list l;
-            print_string ((value_string e)^" ") in
+            match e with
+            | Int(n) -> print_string ((value_string e)^" ")
+            | Clos(clo) -> print_string ((value_string e)^" ")
+            | Unit(u) -> () in
   print_rev_list v;
   print_endline " ";
 
@@ -40,9 +43,13 @@ type thread_state = {
   mutable heap  : heap 
 }
 
+type stack_print = {
+  mutable to_print : value list
+}
+
 exception End_of_thread of thread_state
     
-let rec step state =
+let step state thread_queue =
   let fetch() =
     match state.code with
       | []   ->
@@ -104,9 +111,9 @@ let rec step state =
       state.env <- Env.add clo.id v clo.env
 
     | IS.Return ->
-      let Int v = pop() in
+      let v = pop() in
       let Clos(clo) = pop() in
-      push(Int(v));
+      push(v);
       state.env <- clo.env;
       state.code <- clo.code
 
@@ -139,24 +146,27 @@ let rec step state =
       ()
 
     | IS.Spawn ->
-      let is_empty l = match l with
-      | [] -> true
-      | _ -> false in
       let v = pop() in
       let Clos(clo) = pop() in
-      let new_state = {code=clo.code; stack=[]; env=(Env.add clo.id v clo.env); heap=state.heap} in
-      while not (is_empty new_state.code) do
-        step new_state;
-        done; 
-      let retval = List.hd new_state.stack in
-      push(retval)
+      Queue.add {code=clo.code; stack=[]; env=(Env.add clo.id v clo.env); heap=state.heap} thread_queue
 
 let execute p : unit =
+  let stack_print = {to_print = []} in
+  let thread_queue = Queue.create () in
   let is_empty l = match l with
   | [] -> true
   | _ -> false in
-  let state = {code=p; stack=[]; env=Env.empty; heap={memory=Hashtbl.create 10; address=0}} in (* should I use 10? *)
-  while not (is_empty state.code) do
-    step state;
+  Queue.add {code=p; stack=[]; env=Env.empty; heap={memory=Hashtbl.create 10; address=0}} thread_queue; (* should I use 10? *)
+  while not (Queue.is_empty thread_queue) do
+    let current_thread = Queue.pop thread_queue in
+    Random.self_init();
+    let temp_counter = ref (1+(Random.int 8)) in
+    while (!temp_counter > 0) && (not (is_empty current_thread.code)) do
+      step current_thread thread_queue;
+      temp_counter := !temp_counter - 1;
+      done;
+    if not (is_empty current_thread.code) then 
+      Queue.add current_thread thread_queue 
+    else stack_print.to_print <- current_thread.stack@stack_print.to_print
     done;
-  print_reversed_value_list state.stack
+  print_reversed_value_list_without_units stack_print.to_print

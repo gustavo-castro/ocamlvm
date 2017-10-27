@@ -17,6 +17,6 @@ let () =
   let e  = Parser.main Lexer.token lb in
   close_in c;
   let p  = Compile.compile_expr e in
-  InstructionSet.print_prog p;
+  (* InstructionSet.print_prog p; *)
   VM.execute p; 
   exit 0
