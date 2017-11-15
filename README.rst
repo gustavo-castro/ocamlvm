@@ -9,11 +9,34 @@ Syntax
 
 The only type implemented into the VM for the moment are integers,
 References and functions are also implemented (one variable functions).
-OCaml's Let's can only be used coupled with the in keyword. An addition
-to OCaml's original language is that the this is a Concurrent Virtual Machine,
-so there is a command that allows you to spawn new threads for applying
-function operators, and it's syntax is
-spawn ~your function goes here~ ~your variable goes here~.
+An addition to OCaml's original language is that this is a Concurrent
+Virtual Machine, so there is a command that allows you to spawn new threads
+for applying function operators. The syntax that can be read byt it is the following:
+	
+  {expr} : Expressions
+  {atom} : Atomic Expressions
+  {op} : Operators
+
+  {expr} ::= {atom}                 (* Atomic *)
+  	|  {expr} {op} {expr}           (* Binary Operation *)
+    |  let [id] = {expr} in {expr}  (* Local Definition *)
+  
+    |  fun [id] -> {expr}           (* Function *)
+    |  {expr} {atom}                (* Application *)
+
+    |  ref {atom}                   (* Reference *)      
+    |  {expr} := {expr}             (* Update *)
+    |  {expr} ; {expr}              (* Sequence *)
+
+    |  spawn {atom} {atom}          (* Nouveau thread *)
+
+  {atom} ::= [n]                    (* Constant integer *)
+    |  [id]                         (* Name *)
+    |  ( {expr} )                   (* Expression *)
+  
+    |  ! {atom}                     (* Reads *)
+
+  {op} ::= + | - | *				(* Operator *)
 
 Quick Start
 ------------------------
