@@ -45,6 +45,7 @@ for applying function operators. Its syntax is the following:
 
 
   {atom} ::= [n]                    (Constant integer)
+  
    \|  [id]                         (Name)
    
    \|  ( {expr} )                   (Expression)
