@@ -13,30 +13,47 @@ An addition to OCaml's original language is that this is a Concurrent
 Virtual Machine, so there is a command that allows you to spawn new threads
 for applying function operators. Its syntax is the following:
 	
-  {expr} : Expressions
-  {atom} : Atomic Expressions
-  {op} : Operators
+{expr} : Expressions
+
+{atom} : Atomic Expressions
+
+{op} : Operators
 
   {expr} ::= {atom}                 (Atomic)
-  	|  {expr} {op} {expr}           (Binary Operation)
-    |  let [id] = {expr} in {expr}  (Local Definition)
-  
-    |  fun [id] -> {expr}           (Function)
-    |  {expr} {atom}                (Application)
 
-    |  ref {atom}                   (Reference)      
-    |  {expr} := {expr}             (Update)
-    |  {expr} ; {expr}              (Sequence)
+   \|  {expr} {op} {expr}           (Binary Operation)
+   
+   \|  let [id] = {expr} in {expr}  (Local Definition)
 
-    |  spawn {atom} {atom}          (Nouveau thread)
+   |
+   
+   \| [id] -> {expr}           (Function)
+   
+   \| {expr} {atom}                (Application)
+
+   |
+
+   \|  ref {atom}                   (Reference)      
+   
+   \|  {expr} := {expr}             (Update)
+   
+   \|  {expr} ; {expr}              (Sequence)
+
+   |
+
+   \|  spawn {atom} {atom}          (New thread)
+
 
   {atom} ::= [n]                    (Constant integer)
-    |  [id]                         (Name)
-    |  ( {expr} )                   (Expression)
-  
-    |  ! {atom}                     (Reads)
+   \|  [id]                         (Name)
+   
+   \|  ( {expr} )                   (Expression)
 
-  {op} ::= + | - | *				(Operator)
+   |
+    
+   \|  ! {atom}                     (Reads)
+
+  {op} ::= + | - | *        (Operator)
 
 Quick Start
 ------------------------
